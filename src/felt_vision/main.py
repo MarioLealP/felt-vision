@@ -5,8 +5,17 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
 import httpx
 
-logging.basicConfig(level=logging.INFO)
+# felt-vision runs hidden (Launch Felt), so basicConfig's default stream
+# handler writes to a console that doesn't exist - same fix as felt-tray's
+# src/felt_tray/__init__.py and felt-animation's server.py.
+_log_path = os.path.join(os.environ.get("TEMP", "."), "felt-vision.log")
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    handlers=[logging.FileHandler(_log_path, encoding="utf-8"), logging.StreamHandler()],
+)
 logger = logging.getLogger(__name__)
+logger.info("felt-vision starting up, logging to %s", _log_path)
 
 app = FastAPI(title="felt-vision")
 

@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+
+      - run: uv sync
+
+      - name: lint (ruff check)
+        run: uv run ruff check
+
+      - name: format (ruff format --check)
+        run: uv run ruff format --check
+
+      - name: types (pyright)
+        run: uv run pyright
+
+      # WP-39: no tests exist yet in this repo (main.py is one 75-line
+      # module, one endpoint - see README's Development section and
+      # WP-38 item 33 for the planned /health endpoint that would give
+      # it something worth testing). Nothing to run here today.

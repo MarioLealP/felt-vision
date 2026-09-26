@@ -26,8 +26,8 @@ OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434/api/generate")
 VISION_MODEL = os.environ.get("VISION_MODEL", "llava")
 
 # The strict Anti-PII Prompt
-SYSTEM_PROMPT = """You are the visual cortex of an AI desktop companion. 
-Describe exactly what is happening on this screen in 1-2 short sentences. 
+SYSTEM_PROMPT = """You are the visual cortex of an AI desktop companion.
+Describe exactly what is happening on this screen in 1-2 short sentences.
 CRITICAL RULE: If the screen shows a bank, email client, spreadsheet, personal chat, or any private documents, DO NOT transcribe any names, numbers, or text. Simply state: 'The user is looking at private documents'.
 Otherwise, focus on the atmosphere, game events, or what the user is actively doing."""
 

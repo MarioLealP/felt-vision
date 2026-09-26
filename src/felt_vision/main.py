@@ -1,9 +1,10 @@
 import base64
 import logging
 import os
-from fastapi import FastAPI, UploadFile, File
-from fastapi.responses import JSONResponse
+
 import httpx
+from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import JSONResponse
 
 # felt-vision runs hidden (Launch Felt), so basicConfig's default stream
 # handler writes to a console that doesn't exist - same fix as felt-tray's

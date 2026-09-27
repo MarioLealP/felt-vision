@@ -5,10 +5,10 @@ from pathlib import Path
 from typing import TypedDict
 
 import httpx
-from dotenv import load_dotenv
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # felt-vision runs hidden (Launch Felt), so basicConfig's default stream
 # handler writes to a console that doesn't exist - same fix as felt-tray's
@@ -24,15 +24,25 @@ logger.info("felt-vision starting up, logging to %s", _log_path)
 
 app = FastAPI(title="felt-vision")
 
-# WP-24: load the repo-root .env like the sibling repos do. Real
-# process/launcher environment variables still win (override=False), so
-# nothing that works today changes; .env just becomes an option.
-load_dotenv(Path(__file__).resolve().parents[2] / ".env", override=False)
 
-# Read from environment or fallback to Ollama defaults
-OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434/api/generate")
-# Try `moondream`, `llava`, `qwen2-vl`, etc. You can swap this out during testing.
-VISION_MODEL = os.environ.get("VISION_MODEL", "llava")
+class VisionSettings(BaseSettings):
+    """WP-24: pydantic-settings, like felt-core's FeltConfig (Mario: use
+    pydantic-settings, not python-dotenv). Reads the repo-root .env; real
+    process/launcher environment variables still win over it, so nothing
+    that works today changes. Unprefixed names, as before."""
+
+    model_config = SettingsConfigDict(
+        env_file=Path(__file__).resolve().parents[2] / ".env", extra="ignore"
+    )
+
+    ollama_url: str = "http://127.0.0.1:11434/api/generate"
+    # Try `moondream`, `llava`, `qwen2-vl`, etc. Swap freely during testing.
+    vision_model: str = "llava"
+
+
+_settings = VisionSettings()
+OLLAMA_URL = _settings.ollama_url
+VISION_MODEL = _settings.vision_model
 
 
 class OllamaGenerateRequest(TypedDict):

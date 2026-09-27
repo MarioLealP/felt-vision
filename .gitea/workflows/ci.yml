@@ -27,10 +27,8 @@ jobs:
       - name: format (ruff format --check)
         run: uv run ruff format --check
 
-      - name: types (pyright)
-        run: uv run pyright
+      - name: types (ty, zero-error policy - no baseline)
+        run: uv run ty check
 
-      # WP-39: no tests exist yet in this repo (main.py is one 75-line
-      # module, one endpoint - see README's Development section and
-      # WP-38 item 33 for the planned /health endpoint that would give
-      # it something worth testing). Nothing to run here today.
+      - name: test (pytest)
+        run: uv run python -m pytest -v

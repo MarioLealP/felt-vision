@@ -55,14 +55,16 @@ Logs to `%TEMP%\felt-vision.log` and the console (it runs hidden under
 uv sync
 uv run ruff check
 uv run ruff format --check
-uv run pyright
+uv run ty check
+uv run python -m pytest
 ```
 
-No tests yet — `main.py` is a single 75-line module with one endpoint;
-see `docs/plans/impl/WP-39-tooling.md` for why this WP didn't add a test
-suite (out of scope: WP-39 is tooling setup, not new coverage) and
+`tests/test_analyze.py` is a small smoke suite (config defaults, `/analyze`'s
+request/response shape) added by the WP-tooling ty pass — Ollama itself is
+never called, `httpx.AsyncClient.post` is monkeypatched. See
 `docs/plans/impl/WP-38-architecture-audit.md` item 33 for the planned
-`/health` endpoint that would give it something worth testing.
+`/health` endpoint that would give this service something worth testing
+beyond that.
 
 ## License
 

@@ -10,6 +10,7 @@ requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.141.1",
     "httpx>=0.28.1",
+    "pydantic>=2.13.5",
     "python-multipart>=0.0.32",
     "uvicorn>=0.53.0",
 ]
@@ -24,9 +25,13 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
     "pre-commit>=4.6.2",
-    "pyright>=1.1.414",
+    "pytest>=9.1.1",
     "ruff>=0.16.9",
+    "ty>=0.0.84",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 100
@@ -34,18 +39,14 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "C4"]
+# Zero-error policy (2026-09-26): no per-file-ignore baseline. main.py's
+# one documented false positive (FastAPI's File()/UploadFile dependency-
+# injection idiom, B008) is an inline `# noqa` at its own line instead -
+# see that line for why.
 
-[tool.ruff.lint.per-file-ignores]
-# B008 (function-call-in-default-argument): FastAPI's own
-# File()/UploadFile dependency-injection idiom - the "fix" ruff suggests
-# would break the framework contract, a documented false positive for
-# FastAPI (same as felt-core's api.py).
-# E501 (line-too-long): one pre-existing long line in the system prompt.
-"src/felt_vision/main.py" = ["B008", "E501"]
+[tool.ty.environment]
+python-version = "3.12"
 
-[tool.pyright]
-include = ["src"]
+[tool.ty.src]
+include = ["src", "tests"]
 exclude = ["**/__pycache__"]
-typeCheckingMode = "basic"
-venvPath = "."
-venv = ".venv"

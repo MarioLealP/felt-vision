@@ -1,9 +1,11 @@
 import base64
 import logging
 import os
+from pathlib import Path
 from typing import TypedDict
 
 import httpx
+from dotenv import load_dotenv
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -21,6 +23,11 @@ logger = logging.getLogger(__name__)
 logger.info("felt-vision starting up, logging to %s", _log_path)
 
 app = FastAPI(title="felt-vision")
+
+# WP-24: load the repo-root .env like the sibling repos do. Real
+# process/launcher environment variables still win (override=False), so
+# nothing that works today changes; .env just becomes an option.
+load_dotenv(Path(__file__).resolve().parents[2] / ".env", override=False)
 
 # Read from environment or fallback to Ollama defaults
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434/api/generate")

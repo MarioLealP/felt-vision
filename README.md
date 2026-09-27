@@ -23,10 +23,10 @@ uv sync
 uv run felt-vision   # or: python -c "from felt_vision.main import run; run()"
 ```
 
-felt-vision does **not** load a `.env` file (see `.env.example`'s own
-note) — `OLLAMA_URL`/`VISION_MODEL` are read straight from the process
-environment, so either export them before launching or accept the
-defaults (`http://127.0.0.1:11434/api/generate`, `llava`). `LaunchFelt.ps1`
+`OLLAMA_URL` and `VISION_MODEL` come from a repo-root `.env`, loaded with
+python-dotenv since WP-24 (copy `.env.example`), or from the process
+environment, which always wins over `.env`. The defaults are
+`http://127.0.0.1:11434/api/generate` and `llava`. `LaunchFelt.ps1`
 starts it hidden, on port `8080`, with no overrides set today.
 
 ## Usage
